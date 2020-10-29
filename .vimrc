@@ -29,19 +29,34 @@ set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
-set updatetime=50
+set updatetime=750
 
 " Don't pass messages to |ins-completion-menu|.
 set shortmess+=c
 
-set colorcolumn=80
+set colorcolumn=120
 highlight ColorColumn ctermbg=0 guibg=lightgrey
 
 
 set pastetoggle=<F2>
 
+" vim-plug plugin manager:
+" commands:
+" PlugUpdate [name ...] - install or update plugins
+" PlugInstall [name ...] - install plugins
+" PlugUpgrade Upgrade vim-plug itself
+" PlugStatus Check status of plugins
+"
+"    ____  __            _           
+"   / __ \/ /_  ______ _(_)___  _____
+"  / /_/ / / / / / __ `/ / __ \/ ___/
+" / ____/ / /_/ / /_/ / / / / (__  )  plugins
+"/_/   /_/\__,_/\__, /_/_/ /_/____/  
+"              /____/             
 call plug#begin('~/.vim/plugged')
-
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'dominikduda/vim_current_word'
+Plug 'morhetz/gruvbox'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-fugitive'
 Plug 'vim-utils/vim-man'
@@ -50,14 +65,14 @@ Plug 'sheerun/vim-polyglot'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'https://github.com/nvie/vim-togglemouse'
-
+Plug 'Yggdroot/LeaderF', { 'do': './install.sh' }
+Plug 'zivyangll/git-blame.vim'
 Plug 'preservim/nerdtree'
 Plug 'dyng/ctrlsf.vim'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'phanviet/vim-monokai-pro'
 Plug 'vim-airline/vim-airline'
 Plug 'flazz/vim-colorschemes'
-
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 call plug#end()
 
 " --- vim go (polyglot) settings.
