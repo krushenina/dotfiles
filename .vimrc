@@ -1,6 +1,5 @@
 syntax on
-
-set guicursor=
+set guicursor+=n:-blinkwait175-blinkoff150-blinkon175
 set number relativenumber
 set hidden
 set noerrorbells
