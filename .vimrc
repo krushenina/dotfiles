@@ -113,10 +113,12 @@ inoremap <C-c> <esc>
 
 nmap <silent> ,/ :nohlsearch<CR>
 
-map <up> <nop>
-map <down> <nop>
-map <left> <nop>
-map <right> <nop>
+"move line under cursor with keys
+nnoremap <A-Up> :m-2<CR>
+nnoremap <A-j> :m+<CR>
+inoremap <A-Up> <Esc>:m-2<CR>
+inoremap <A-Down> <Esc>:m+<CR>
+
 nnoremap j gj
 nnoremap k gk
 
