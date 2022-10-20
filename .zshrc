@@ -145,7 +145,7 @@ _gr() {
   cut -d$'\t' -f1
 }
 
-_gs() {
+_gg() {
   is_in_git_repo || return
   git stash list | fzf-down --reverse -d: --preview 'git show --color=always {1}' |
   cut -d: -f1
@@ -172,3 +172,5 @@ unset -f bind-git-helper
 #source ~/Documents/gitstatus/gitstatus.prompt.zsh
 # Load syntax highlighting; should be last.
 source /usr/share/zsh/plugins/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh 2>/dev/null
+source ~/.local/share/zsh/plugins/zsh-z.plugin.zsh
+
