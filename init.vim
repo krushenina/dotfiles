@@ -204,6 +204,276 @@ call plug#end()
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
 
+-- TREESITTER
+require'nvim-treesitter.configs'.setup {
+  --ensure_installed = "all", -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ensure_installed = {"rust",  "php","dockerfile", "lua", "typescript", "json", "javascript", "html", "jsdoc", "vue", "bash", "tsx", "dockerfile", "regex", "vim", "make", "c"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  sync_install = false, -- install languages synchronously (only applied to `ensure_installed`)
+  ignore_install = {}, -- List of parsers to ignore installing
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+    disable = {},  -- list of language that will be disabled
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = true,
+  },
+  indent = {
+    enable = true
+  },
+  fold = {
+    enable = true,
+  },
+  rainbow = {
+    enable = true,
+    -- disable = { "jsx", "cpp" }, list of languages you want to disable the plugin for
+    extended_mode = true, -- Also highlight non-bracket delimiters like html tags, boolean or table: lang -> boolean
+    max_file_lines = nil, -- Do not enable for files with more than n lines, int
+    -- colors = {}, -- table of hex strings
+    -- termcolors = {} -- table of colour name strings
+  },
+  context_commentstring = {
+    enable = true
+  }
+}
+-- TRESITTER-CONTEXT Sticky Scroll
+require'treesitter-context'.setup{
+    enable = true, -- Enable this plugin (Can be enabled/disabled later via commands)
+    max_lines = 1, -- How many lines the window should span. Values <= 0 mean no limit.
+    trim_scope = 'outer', -- Which context lines to discard if `max_lines` is exceeded. Choices: 'inner', 'outer'
+    patterns = { -- Match patterns for TS nodes. These get wrapped to match at word boundaries.
+        -- For all filetypes
+        -- Note that setting an entry here replaces all other patterns for this entry.
+        -- By setting the 'default' entry below, you can control which nodes you want to
+        -- appear in the context window.
+        default = {
+            'class',
+            'function',
+            'method',
+            -- 'for', -- These won't appear in the context
+            -- 'while',
+            -- 'if',
+            -- 'switch',
+            -- 'case',
+        },
+        -- Example for a specific filetype.
+        -- If a pattern is missing, *open a PR* so everyone can benefit.
+        --   rust = {
+        --       'impl_item',
+        --   },
+    },
+    exact_patterns = {
+        -- Example for a specific filetype with Lua patterns
+        -- Treat patterns.rust as a Lua pattern (i.e "^impl_item$" will
+        -- exactly match "impl_item" only)
+        -- rust = true,
+    },
+
+}
+-- HARPOON
+require("harpoon").setup({
+    global_settings = {
+        save_on_change = true,
+        global_project = vim.fn['Find_git_root']()
+    },
+})
+
+-- NVIMtree like nerdtree but lua
+require("nvim-tree").setup({
+    --sort_by = "case_sensitive",
+    view = {
+      adaptive_size = true,
+      mappings = {
+        list = {
+          { key = "?", action = "toggle_help" },
+        },
+      },
+    },
+    renderer = {
+   --   group_empty = true,
+        root_folder_modifier = ":t",
+    },
+   -- filters = {
+   --   dotfiles = true,
+   -- },
+})
+
+-- TELESCOPE
+require('telescope').setup({
+  defaults = {
+      vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--trim"
+    },
+      layout_strategy = 'vertical',
+      layout_config = { height = 0.95 },
+    -- Default configuration for telescope goes here:
+    -- config_key = value,
+    mappings = {
+      i = {
+        -- map actions.which_key to <C-h> (default: <C-/>)
+        -- actions.which_key shows the mappings for your picker,
+        -- e.g. git_{create, delete, ...}_branch for the git_branches picker
+        --["<C-h>"] = "which_key"
+        ["<C-j>"] = require('telescope.actions').move_selection_next,
+        ["<C-k>"] = require('telescope.actions').move_selection_previous,
+      }
+    }
+  },
+  pickers = {
+    -- Default configuration for builtin pickers goes here:
+    -- picker_name = {
+    --   picker_config_key = value,
+    --   ...
+    -- }
+    -- Now the picker_config_key will be applied every time you call this
+    -- builtin picker
+     buffers = {
+            ignore_current_buffer = true,
+            sort_lastused = true,
+        },
+  },
+  extensions = {
+    -- Your extension configuration goes here:
+    -- extension_name = {
+    --   extension_config_key = value,
+    -- }
+    -- please take a look at the readme of the extension you want to configure
+        fzf = {
+          fuzzy = true,                    -- false will only do exact matching
+          override_generic_sorter = true,  -- override the generic sorter
+          override_file_sorter = true,     -- override the file sorter
+          case_mode = "smart_case",        -- or "ignore_case" or "respect_case"
+                                           -- the default case_mode is "smart_case"
+        }
+    }
+})
+require('telescope').load_extension('fzf')
+
+vim.api.nvim_set_keymap('n',  '<leader>tct', [[
+    <cmd>lua require('telescope').extensions.ctags_outline.outline({buf='all'})<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>tgs', [[
+    <cmd>lua require'telescope.builtin'.grep_string({cwd=vim.fn['Find_git_root']()})<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>tbb', [[
+    <cmd>lua require'telescope.builtin'.buffers()<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>thh', [[
+    <cmd>lua require'telescope.builtin'.help_tags()<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>ttt', [[
+    <cmd>Telescope<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>tcc', [[
+    <cmd>lua require'telescope.builtin'.commands()<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>tmm', [[
+    <cmd>lua require('telescope').extensions.vim_bookmarks.all({tail_path=false})<cr>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('n',  '<leader>tmf', [[
+<cmd>lua require('telescope').extensions.vim_bookmarks.current_file()<cr>
+]], {noremap = true})
+
+-- SPECTRE search and replace
+require('spectre').setup({
+  find_engine = {
+      -- rg is map with finder_cmd
+      ['rg'] = {
+        cmd = "rg",
+        -- default args
+        args = {
+          '--color=never',
+          '--no-heading',
+          '--with-filename',
+          '--line-number',
+          '--column',
+        } ,
+        options = {
+          ['ignore-case'] = {
+            value= "--ignore-case",
+            icon="[I]",
+            desc="ignore case"
+          },
+          ['hidden'] = {
+            value="--hidden",
+            desc="hidden file",
+            icon="[H]"
+          },
+          ['multiline'] = {
+            value="--multiline",
+            desc="multi line",
+            icon="[M]"
+          }
+          -- you can put any rg search option you want here it can toggle with
+          -- show_option function
+        }
+      },
+      ['ag'] = {
+        cmd = "ag",
+        args = {
+          '--vimgrep',
+          '-s'
+        } ,
+        options = {
+          ['ignore-case'] = {
+            value= "-i",
+            icon="[I]",
+            desc="ignore case"
+          },
+          ['hidden'] = {
+            value="--hidden",
+            desc="hidden file",
+            icon="[H]"
+          },
+        },
+      },
+    },
+})
+
+vim.api.nvim_set_keymap('n', '<Leader>ssg', [[
+    <cmd>lua require('spectre').open({cwd = vim.fn['Find_git_root']()})<CR>
+]], {noremap = true, silent = true})
+
+
+--search current word
+vim.api.nvim_set_keymap('n', '<leader>ssw', [[
+    <cmd>lua require('spectre').open_visual({cwd = vim.fn['Find_git_root'](), select_word=true}) <CR>
+]], {noremap = true})
+
+vim.api.nvim_set_keymap('v', '<leader>ssv', [[
+    <cmd>lua require('spectre').open_visual() <CR>
+]], {noremap = true})
+
+--  search in current file
+vim.api.nvim_set_keymap('n', '<leader>ssf', [[
+    <cmd>lua require('spectre').open_file_search() <CR>
+]], {noremap = true})
+
+-- NVIM HOP
+require'hop'.setup{
+  keys = 'etovxqpdygfblzhckisuran'
+}
+vim.api.nvim_set_keymap('', 'f', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true })<cr>", {})
+vim.api.nvim_set_keymap('', 'F', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true })<cr>", {})
+vim.api.nvim_set_keymap('', 't', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.AFTER_CURSOR, current_line_only = true, hint_offset = -1 })<cr>", {})
+vim.api.nvim_set_keymap('', 'T', "<cmd>lua require'hop'.hint_char1({ direction = require'hop.hint'.HintDirection.BEFORE_CURSOR, current_line_only = true, hint_offset = 1 })<cr>", {})
+EOF
+
 vnoremap <C-r> "hy:%s/<C-r>h//gc<left><left><left>
 
 nmap <leader>pa :let @" = expand("%:p")<cr>
