@@ -165,15 +165,11 @@ if ! filereadable(system('echo -n "${XDG_CONFIG_HOME:-$HOME/.config}/nvim/autolo
 	autocmd VimEnter * PlugInstall
 endif
 call plug#begin('~/.config/nvim/plugged')
-  " Linting/error highlighting
-"  Plug 'sirver/ultisnips'
-  "Plug 'dense-analysis/ale'
   Plug 'neoclide/coc.nvim', {'branch': 'release'}
   Plug 'alvan/vim-closetag'
   Plug 'mg979/vim-visual-multi', {'branch': 'master'}
   Plug 'dominikduda/vim_current_word'
   Plug 'morhetz/gruvbox'
-  Plug 'tpope/vim-fugitive'
   Plug 'vim-utils/vim-man'
   Plug 'mbbill/undotree'
   Plug 'sheerun/vim-polyglot'
@@ -185,7 +181,6 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'https://github.com/tpope/vim-surround'
   Plug 'https://github.com/ap/vim-css-color'
   Plug 'zivyangll/git-blame.vim'
-  Plug 'preservim/nerdtree'
   Plug 'Xuyuanp/nerdtree-git-plugin'
   Plug 'ryanoasis/vim-devicons'
   Plug 'airblade/vim-rooter'
@@ -196,10 +191,28 @@ call plug#begin('~/.config/nvim/plugged')
   Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
   Plug 'jiangmiao/auto-pairs'
   Plug 'https://github.com/AndrewRadev/tagalong.vim'
-  "Plug 'nosami/Omnisharp'
-  "Plug 'https://github.com/OmniSharp/omnisharp-vim'
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'https://github.com/fritzlolpro/harpoon.git'
+  Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && yarn install'  }
+  Plug 'rbgrouleff/bclose.vim'
+  Plug 'francoiscabrol/ranger.vim'
+  Plug 'windwp/nvim-spectre'
+  Plug 'kdheepak/lazygit.nvim'
+  Plug 'kyazdani42/nvim-web-devicons'
+  Plug 'nvim-lua/plenary.nvim'
+  Plug 'kyazdani42/nvim-tree.lua'
+  Plug 'https://github.com/p00f/nvim-ts-rainbow'
+  Plug 'nvim-telescope/telescope.nvim'
+  Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+  Plug 'https://github.com/tom-anders/telescope-vim-bookmarks.nvim'
+  Plug 'nvim-treesitter/nvim-treesitter-context'
+  Plug 'phaazon/hop.nvim'
+  Plug 'https://github.com/tpope/vim-commentary'
+  Plug 'https://github.com/JoosepAlviste/nvim-ts-context-commentstring'
+  Plug 'Yilin-Yang/vim-markbar'
+
 call plug#end()
-"let g:OmniSharp_server_use_mono = 1
+
 " Navigate quickfix list with ease
 nnoremap <silent> [q :cprevious<CR>
 nnoremap <silent> ]q :cnext<CR>
@@ -528,61 +541,6 @@ nmap <silent> <leader>gn <Plug>(coc-diagnostic-next)
 nmap <leader>cf :CocCommand prettier.formatFile<CR>
 nmap <leader>ca <Plug>(coc-codeaction)
 nnoremap <leader>cr :CocRestart<CR>
-
-" Far search/replace
-let g:far#cwd = s:find_git_root()
-let g:far#source = 'rgnvim'
-let g:far#window_layout = 'tab'
-nmap <silent> <buffer> <leader>gs :Farf<cr>
-nmap <silent> <buffer> <leader>gc :Farr<cr>
-
-
-augroup omnisharp_commands
-  autocmd!
-
-  " Show type information automatically when the cursor stops moving.
-  " Note that the type is echoed to the Vim command line, and will overwrite
-  " any other messages in this space including e.g. ALE linting messages.
-  autocmd CursorHold *.cs OmniSharpTypeLookup
-
-  " The following commands are contextual, based on the cursor position.
-  autocmd FileType cs nmap <silent> <buffer> gd <Plug>(omnisharp_go_to_definition)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osfu <Plug>(omnisharp_find_usages)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osfi <Plug>(omnisharp_find_implementations)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>ospd <Plug>(omnisharp_preview_definition)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>ospi <Plug>(omnisharp_preview_implementations)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>ost <Plug>(omnisharp_type_lookup)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osd <Plug>(omnisharp_documentation)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osfs <Plug>(omnisharp_find_symbol)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osfx <Plug>(omnisharp_fix_usings)
-  autocmd FileType cs nmap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
-  autocmd FileType cs imap <silent> <buffer> <C-\> <Plug>(omnisharp_signature_help)
-
-  " Navigate up and down by method/property/field
-  autocmd FileType cs nmap <silent> <buffer> [[ <Plug>(omnisharp_navigate_up)
-  autocmd FileType cs nmap <silent> <buffer> ]] <Plug>(omnisharp_navigate_down)
-  " Find all code errors/warnings for the current solution and populate the quickfix window
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osgcc <Plug>(omnisharp_global_code_check)
-  " Contextual code actions (uses fzf, vim-clap, CtrlP or unite.vim selector when available)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
-  autocmd FileType cs xmap <silent> <buffer> <Leader>osca <Plug>(omnisharp_code_actions)
-  " Repeat the last code action performed (does not use a selector)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
-  autocmd FileType cs xmap <silent> <buffer> <Leader>os. <Plug>(omnisharp_code_action_repeat)
-
-  autocmd FileType cs nmap <silent> <buffer> <Leader>os= <Plug>(omnisharp_code_format)
-
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osnm <Plug>(omnisharp_rename)
-
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osre <Plug>(omnisharp_restart_server)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>osst <Plug>(omnisharp_start_server)
-  autocmd FileType cs nmap <silent> <buffer> <Leader>ossp <Plug>(omnisharp_stop_server)
-augroup END
-
-" Sweet Sweet FuGITive
-nmap <leader>gf :diffget //3<CR>
-nmap <leader>gj :diffget //2<CR>
-"nmap <leader>gs :G<CR>
 
 "move line under cursor with keys
 vnoremap <A-Up> :m-2<CR>
